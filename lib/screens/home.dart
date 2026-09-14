@@ -1,4 +1,11 @@
+// ignore_for_file: dead_code
+
 import "package:flutter/material.dart";
+import 'package:dashed_border/dashed_border.dart';
+import 'package:studipal_web/sub_screens/history.dart';
+import 'package:studipal_web/sub_screens/quiz.dart';
+import 'package:studipal_web/sub_screens/summary.dart';
+import 'package:studipal_web/sub_screens/talk.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -8,8 +15,50 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  bool showDisplay = false;
+  bool showDisplay = true;
   bool isUser = false;
+  bool isLogged = false;
+
+  List<Widget> Pages = [Talk(), History(), Quiz(), Summary()];
+
+  int chosen = 0;
+
+  void login() {
+    setState(() {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          content: Container(
+            height: MediaQuery.of(context).size.height * 0.6,
+            width: MediaQuery.of(context).size.width * 0.6,
+
+            child: Column(children: [Text("Log In")]),
+          ),
+        ),
+      );
+
+      isLogged = !isLogged;
+    });
+  }
+
+  void logout() {
+    setState(() {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          content: Container(
+            height: MediaQuery.of(context).size.height * 0.6,
+            width: MediaQuery.of(context).size.width * 0.6,
+
+            child: Column(children: [Text("Log Out")]),
+          ),
+        ),
+      );
+
+      isLogged = !isLogged;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,19 +175,81 @@ class _HomeState extends State<Home> {
                             borderRadius: BorderRadius.circular(7),
                           ),
 
-                          child: Column(
-                            children: [
-                              Options("Dark Mode", Icons.access_alarm),
-                              Options("Uploads", Icons.access_alarm),
-                              Options("Create Quiz", Icons.access_alarm),
-                              Options("Summerize Document", Icons.access_alarm),
+                          child: SingleChildScrollView(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Options(
+                                    "Dark Mode",
+                                    Icons.colorize_outlined,
+                                    () {},
+                                  ),
 
-                              Options("Upgrade To Premium", Icons.access_alarm),
+                                  OptionsNav("Uploads", Icons.upload, () {
+                                    setState(() {
+                                      chosen = 1;
+                                    });
+                                  }, (chosen == 1)),
+                                  (chosen != 0)
+                                      ? OptionsNav(
+                                          "Talk to Document",
+                                          Icons.smart_toy_outlined,
+                                          () {
+                                            setState(() {
+                                              chosen = 0;
+                                            });
+                                          },
+                                          (chosen == 0),
+                                        )
+                                      : SizedBox.shrink(),
 
-                              Options("Similar Apps", Icons.access_alarm),
-                              Options("Support us", Icons.access_alarm),
-                              Options("Log Out", Icons.logout_outlined),
-                            ],
+                                  OptionsNav(
+                                    "Create Quiz",
+                                    Icons.abc_outlined,
+                                    () {
+                                      setState(() {
+                                        chosen = 2;
+                                      });
+                                    },
+                                    (chosen == 2),
+                                  ),
+                                  OptionsNav(
+                                    "Create FlashCards",
+                                    Icons.gamepad_outlined,
+                                    () {
+                                      setState(() {
+                                        chosen = 3;
+                                      });
+                                    },
+                                    (chosen == 3),
+                                  ),
+
+                                  Options(
+                                    "Premium Access",
+                                    Icons.star_border_outlined,
+                                    () {},
+                                  ),
+
+                                  Options(
+                                    "Similar Apps",
+                                    Icons.app_registration_outlined,
+                                    () {},
+                                  ),
+                                  Options(
+                                    "Support us",
+                                    Icons.favorite_border_outlined,
+                                    () {},
+                                  ),
+                                  Options(
+                                    isLogged ? "Log Out" : "Log in",
+                                    Icons.logout_outlined,
+                                    isLogged ? logout : login,
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         )
                       : SizedBox.shrink(),
@@ -153,72 +264,7 @@ class _HomeState extends State<Home> {
                         borderRadius: BorderRadius.circular(7),
                       ),
 
-                      child: Expanded(
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Select Pdf or Word Document",
-                                style: TextStyle(fontSize: 19),
-                              ),
-                              Container(
-                                height: 200,
-                                width: 200,
-                                margin: EdgeInsets.all(20),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    width: 2,
-                                    color: Colors.black38,
-                                  ),
-                                  borderRadius: BorderRadius.circular(7),
-                                ),
-
-                                child: Icon(Icons.add),
-                              ),
-
-                              Container(
-                                margin: EdgeInsets.all(20),
-                                width: 200,
-                                padding: EdgeInsets.fromLTRB(40, 6, 40, 6),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    width: 2,
-                                    color: const Color.fromARGB(
-                                      202,
-                                      53,
-                                      116,
-                                      168,
-                                    ),
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: const Color.fromARGB(
-                                    193,
-                                    116,
-                                    155,
-                                    223,
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Select",
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black54,
-                                      ),
-                                    ),
-                                    SizedBox(width: 5),
-                                    Icon(Icons.folder, color: Colors.black54),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      child: Expanded(child: Center(child: Pages[chosen])),
                     ),
                   ),
                   Container(
@@ -253,22 +299,23 @@ class _HomeState extends State<Home> {
                         ),
                         Divider(),
                         Container(
-                          height: MediaQuery.of(context).size.height * 0.64,
+                          height: MediaQuery.of(context).size.height * 0.60,
 
                           child: ListView(
                             shrinkWrap: true,
                             children: [
                               Dialogs(
-                                Icons.access_alarm,
+                                false,
                                 "hello there, what would you want to know ?",
                               ),
                               Dialogs(
-                                Icons.access_alarm,
+                                true,
                                 "hello there, what would you want to know ?",
                               ),
                             ],
                           ),
                         ),
+                        SizedBox(height: 20),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
@@ -278,6 +325,13 @@ class _HomeState extends State<Home> {
                                   height: 40,
                                   child: TextField(
                                     decoration: InputDecoration(
+                                      hint: Text(
+                                        "ask a question from document...",
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.black26,
+                                        ),
+                                      ),
                                       isDense: true,
                                       border: OutlineInputBorder(),
                                     ),
@@ -299,6 +353,19 @@ class _HomeState extends State<Home> {
                   ),
                 ],
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Powered By Sleepy Panda ",
+                    style: TextStyle(fontSize: 12, color: Colors.black54),
+                  ),
+                  Text(
+                    "©2025-${DateTime.now().year} All Rights Reserved",
+                    style: TextStyle(fontSize: 12, color: Colors.black54),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -307,43 +374,125 @@ class _HomeState extends State<Home> {
   }
 }
 
-Widget Options(String Title, IconData icon) {
-  return Container(
-    child: Column(
-      children: [
-        Divider(),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(width: 5),
-            Icon(icon),
-            SizedBox(width: 5),
-            Text(Title),
-          ],
-        ),
-        Divider(),
-      ],
+Widget Options(String Title, IconData icon, GestureTapCallback tap) {
+  bool hover = false;
+  return InkWell(
+    onHover: (value) {
+      If(value) {
+        hover = true;
+      }
+    },
+    hoverColor: const Color.fromARGB(87, 202, 216, 240),
+    onTap: tap,
+    child: Container(
+      padding: EdgeInsets.only(right: 20),
+      child: Column(
+        children: [
+          Divider(),
+          Row(
+            children: [
+              SizedBox(width: 5),
+              Icon(icon, color: Colors.black38),
+              SizedBox(width: 5),
+              Text(
+                Title,
+                style: TextStyle(
+                  color: const Color.fromARGB(193, 0, 0, 0),
+                  fontWeight: FontWeight(400),
+                ),
+              ),
+            ],
+          ),
+          Divider(),
+        ],
+      ),
     ),
   );
 }
 
-Widget Dialogs(IconData icon, String message) {
+Widget OptionsNav(
+  String Title,
+  IconData icon,
+  GestureTapCallback tap,
+  bool active,
+) {
+  bool hover = false;
+  bool chosen = active;
+
+  return InkWell(
+    onHover: (value) {
+      If(value) {
+        hover = true;
+      }
+    },
+    hoverColor: const Color.fromARGB(87, 202, 216, 240),
+
+    onTap: tap,
+    child: Container(
+      padding: EdgeInsets.only(right: 20),
+      color: chosen
+          ? const Color.fromARGB(57, 205, 215, 231)
+          : Colors.transparent,
+
+      child: Column(
+        children: [
+          Divider(),
+          Row(
+            children: [
+              SizedBox(width: 5),
+              Icon(icon, color: Colors.black38),
+              SizedBox(width: 5),
+              Text(
+                Title,
+                style: TextStyle(
+                  color: const Color.fromARGB(193, 0, 0, 0),
+                  fontWeight: FontWeight(400),
+                ),
+              ),
+            ],
+          ),
+          Divider(),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget Dialogs(bool isUser, String message) {
   return Container(
     margin: EdgeInsets.all(10),
+    clipBehavior: Clip.antiAlias,
     padding: EdgeInsets.all(4),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(10),
       border: Border.all(width: 2, color: Colors.black38),
     ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(icon),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text(message)],
-        ),
-      ],
+    child: SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            isUser ? Icons.face_5_outlined : Icons.smart_toy_outlined,
+            color: isUser ? const Color.fromARGB(179, 0, 0, 0) : Colors.black87,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                message,
+                style: TextStyle(
+                  fontWeight: isUser ? FontWeight(400) : FontWeight.bold,
+                  overflow: TextOverflow.clip,
+                  color: isUser
+                      ? Colors.black38
+                      : const Color.fromARGB(143, 0, 0, 0),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     ),
   );
 }
